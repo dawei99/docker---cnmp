@@ -9,9 +9,6 @@ RUN sed -i 'N;32a include /usr/local/nginx/conf/vhosts/*.conf;' /usr/local/nginx
         &&    echo validate_password=OFF >> /etc/my.cnf \
         &&    sed -ie "s/socket=\/var\/lib\/mysql\/mysql.sock/socket=\/tmp\/mysql.sock/"  /etc/my.cnf \
         &&    sed -ie "s/;extension=mysqli/extension=mysqli/"  /usr/local/php7/lib/php.ini \
-        &&    echo "chown -R mysql:mysql /data/mysql && chmod -R 775 /data/mysql" >>  /usr/sbin/init \
-        &&    echo "chown -R nobody:www /www && chmod -R 775 /www" >>  /usr/sbin/init \
-        &&    echo "pkill php-fpm && /usr/local/php_7.3.15/sbin/php-fpm" >>  /usr/sbin/init \
 
         # yum操作
         &&    yum install -y wget \
@@ -45,8 +42,15 @@ RUN sed -i 'N;32a include /usr/local/nginx/conf/vhosts/*.conf;' /usr/local/nginx
         &&    make  && make install \
         &&    sed -ie "s/;extension=curl/extension=curl/"  /usr/local/php_7.3.15/lib/php.ini \
 
+        # 编译gd扩展
+        &&    cd /usr/local/php7.3.15/php-7.3.15/ext/gd \
+        &&    /usr/local/php_7.3.15/bin/phpize \
+        &&    ./configure --with-php-config=/usr/local/php_7.3.15/bin/php-config \
+        &&    make  && make install \
+        &&    sed -ie "s/;extension=gd2/extension=gd/"  /usr/local/php_7.3.15/lib/php.ini \
+
         # 创建bin文件
         &&    ln -sf /usr/local/php_7.3.15/bin/php /usr/bin/php
 
 VOLUME ["/usr/local/nginx/conf/vhosts"]
-
+CMD ["/opt/init.sh"]
