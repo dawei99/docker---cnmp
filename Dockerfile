@@ -50,7 +50,9 @@ RUN sed -i 'N;32a include /usr/local/nginx/conf/vhosts/*.conf;' /usr/local/nginx
         &&    sed -ie "s/;extension=gd2/extension=gd/"  /usr/local/php_7.3.15/lib/php.ini \
 
         # 创建bin文件
-        &&    ln -sf /usr/local/php_7.3.15/bin/php /usr/bin/php
+        &&    ln -sf /usr/local/php_7.3.15/bin/php /usr/bin/php \
+        
+        &&    yum -y install elinks
 
 VOLUME ["/usr/local/nginx/conf/vhosts"]
 CMD ["/opt/init.sh"]
