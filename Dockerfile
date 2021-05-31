@@ -54,5 +54,7 @@ RUN sed -i 'N;32a include /usr/local/nginx/conf/vhosts/*.conf;' /usr/local/nginx
         
         &&    yum -y install elinks
 
+
+
 VOLUME ["/usr/local/nginx/conf/vhosts"]
 CMD ["/opt/init.sh"]
